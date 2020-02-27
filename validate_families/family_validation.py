@@ -13,7 +13,7 @@ class TLSAdapter(adapters.HTTPAdapter):
         """Create and initialize the urllib3 PoolManager."""
         ctx = ssl.create_default_context()
         ctx.set_ciphers('DEFAULT@SECLEVEL=1')
-        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
         self.poolmanager = poolmanager.PoolManager(
             num_pools=connections,
             maxsize=maxsize,
