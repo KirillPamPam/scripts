@@ -2,7 +2,6 @@ import sys
 import time
 import requests
 import pandas as pd
-import urllib3
 
 NO_PRODUCTS = 'No products'
 NOT_FOUND = 'Not found'
@@ -87,10 +86,9 @@ def generate_report(family_status_map, show_valid):
 
 
 if __name__ == '__main__':
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    #urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     args = sys.argv[1:]
     family_service_url = args[0] + '{}'
     file_path = args[1]
     show_valid = args[2] == 'True'
-    print(show_valid)
     validate_families(get_families(file_path), family_service_url, show_valid)
