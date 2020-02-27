@@ -2,6 +2,25 @@ import sys
 import time
 import requests
 import pandas as pd
+import urllib3
+
+from requests import adapters
+import ssl
+from urllib3 import poolmanager
+
+
+class TLSAdapter(adapters.HTTPAdapter):
+    def init_poolmanager(self, connections, maxsize, block=False):
+        """Create and initialize the urllib3 PoolManager."""
+        ctx = ssl.create_default_context()
+        ctx.set_ciphers('DEFAULT@SECLEVEL=1')
+        self.poolmanager = poolmanager.PoolManager(
+            num_pools=connections,
+            maxsize=maxsize,
+            block=block,
+            ssl_version=ssl.PROTOCOL_TLS,
+            ssl_context=ctx)
+
 
 NO_PRODUCTS = 'No products'
 NOT_FOUND = 'Not found'
@@ -42,7 +61,9 @@ def validate_families(families, url, show_valid):
             break
         family_id = family[0]
         print("Processing {} family".format(family_id))
-        response = requests.get(url.format(family_id), params={'showProducts': 'true'}, verify=False)
+        session = requests.sessions.Session()
+        session.mount('https://', TLSAdapter())
+        response = session.get(url.format(family_id), params={'showProducts': 'true'}, verify=False)
         if response.status_code == 404:
             family_status_map[family_id] = NOT_FOUND
         elif response.status_code == 200:
@@ -86,7 +107,7 @@ def generate_report(family_status_map, show_valid):
 
 
 if __name__ == '__main__':
-    #urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     args = sys.argv[1:]
     family_service_url = args[0] + '{}'
     file_path = args[1]
