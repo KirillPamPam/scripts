@@ -3,7 +3,6 @@ import time
 import requests
 import pandas as pd
 import urllib3
-
 from requests import adapters
 import ssl
 from urllib3 import poolmanager
@@ -63,7 +62,7 @@ def validate_families(families, url, show_valid):
         print("Processing {} family".format(family_id))
         session = requests.sessions.Session()
         session.mount('https://', TLSAdapter())
-        response = session.get(url.format(family_id), params={'showProducts': 'true'}, verify=False)
+        response = session.get(url.format(family_id), params={'showProducts': 'true'})
         if response.status_code == 404:
             family_status_map[family_id] = NOT_FOUND
         elif response.status_code == 200:
