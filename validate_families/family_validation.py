@@ -57,6 +57,8 @@ def validate_families(families, url, show_valid):
     print('Families count: {}'.format(len(families)))
     family_status_map = {}
     for i, family in enumerate(families):
+        if i == 10:
+            break
         family_id = family[0]
         print("Processing {} family".format(family_id))
         session = requests.sessions.Session()
