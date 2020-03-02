@@ -69,8 +69,7 @@ def validate_families(families, url, show_valid):
         elif response.status_code == 200:
             handle_family_info(response, family_id, family_status_map, show_valid)
         time.sleep(0.5)
-    if family_status_map:
-        generate_report(family_status_map, show_valid)
+    generate_report(family_status_map, show_valid)
 
 
 def highlight_status(status):
